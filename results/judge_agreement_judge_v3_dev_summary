@@ -1,0 +1,22 @@
+{
+  "n_scored": 110,
+  "n_errors": 0,
+  "stopped_early": false,
+  "accuracy": 0.990909090909091,
+  "kappa": 0.9817457683372055,
+  "confusion": {
+    "ref_good__judge_good": 58,
+    "ref_good__judge_bad": 1,
+    "ref_bad__judge_good": 0,
+    "ref_bad__judge_bad": 51
+  },
+  "judge_good_rate": 0.5272727272727272,
+  "reference_good_rate": 0.5363636363636364,
+  "disagreement_ids": [
+    31
+  ],
+  "reference": "human",
+  "prompt": "prompts/judge_v3.txt",
+  "model": "qwen/qwen3.8-27b",
+  "dry_run": false
+}
