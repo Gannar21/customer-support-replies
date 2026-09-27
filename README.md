@@ -173,21 +173,11 @@ session's newly-written rows, not the full output file (see
 
 ## Contributions
 
-*(Based on git commit history — see the repo's commit log for full detail.)*
-
-**Asma Aouiti** (`asmaaouiti403`) — Set up the golden dataset end to end:
-`data/labelling_guide.md`, the dataset generator with topic-matched
-solutions (`data/generate_data.py`), and the labelled golden set itself
-(`data/golden_set.jsonl`). Built the LLM judge, including pairwise
-comparison and the judge-vs-human agreement evaluation
-(`harness/judge.py`), and the position/verbosity bias checks
-(`harness/bias_checks.py`). Ran and committed the full evaluation outputs:
-`system_v2_dev.jsonl`/`_scored.jsonl`/`_meta.json`, both judge-vs-human
-runs (`judge_agreement_judge_v1_dev*`, `judge_agreement_judge_v3_dev*`),
-and both bias-check results (`bias_position.json`,
-`bias_verbosity_good.json`). Also wrote `postmortem.md`, removed the
-now-redundant `data/check_agreement.py`, and maintained
-`.env.example`, `.gitignore`, and `requirements.txt`.
+**Asma Aouiti** (`asmaaouiti403`) — Golden dataset (`labelling_guide.md`,
+`generate_data.py`, `golden_set.jsonl`), the LLM judge and bias checks
+(`harness/judge.py`, `harness/bias_checks.py`), all evaluation outputs
+(system_v2 results, judge-vs-human runs, bias-check results),
+`postmortem.md`, the report, and the README.
 
 **Asma Ganner** (`Gannar21`) — Set up the project's core architecture:
 initial harness structure, `harness/runner.py`, the runner schema/config,
@@ -202,3 +192,4 @@ and committed the system_v1 evaluation results.
 `prompts/CHANGELOG.md` to document why each version changed, wrote
 `system_v2.txt`, and maintained `tests/test_judge.py` and
 `tests/test_runner.py`.
+
