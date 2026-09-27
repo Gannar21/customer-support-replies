@@ -1,4 +1,3 @@
-````markdown
 # Customer Support Replies
 
 ## Introduction
@@ -174,6 +173,8 @@ session's newly-written rows, not the full output file (see
 
 ## Contributions
 
+*(Based on git commit history — see the repo's commit log for full detail.)*
+
 **Asma Aouiti** (`asmaaouiti403`) — Set up the golden dataset end to end:
 `data/labelling_guide.md`, the dataset generator with topic-matched
 solutions (`data/generate_data.py`), and the labelled golden set itself
@@ -201,4 +202,3 @@ and committed the system_v1 evaluation results.
 `prompts/CHANGELOG.md` to document why each version changed, wrote
 `system_v2.txt`, and maintained `tests/test_judge.py` and
 `tests/test_runner.py`.
-````
