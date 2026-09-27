@@ -1,4 +1,3 @@
-
 from __future__ import annotations
 
 import argparse
@@ -101,7 +100,13 @@ def _api_call(
             return output, resp.usage.prompt_tokens, resp.usage.completion_tokens
 
         except RateLimitError as e:
-            if "day" in str(e).lower():
+            # NOTE: was `"day" in str(e).lower()` — that also matches "today" in Groq's
+            # unrelated "Upgrade to Dev Tier today" marketing line, so every ordinary
+            # per-minute (TPM) rate limit was misclassified as an unrecoverable daily
+            # quota and the whole run aborted instead of just backing off ~2s and
+            # continuing. Check for actual daily-limit wording instead.
+            msg = str(e).lower()
+            if "per day" in msg or "tpd" in msg or "rpd" in msg:
                 raise _DailyLimitReached(str(e))
             wait = BASE_BACKOFF_S * 2 ** attempt
             try:
@@ -230,10 +235,17 @@ def main() -> None:
         items = [i for i in items if i.split == args.split]
 
     out_path = Path(args.out)
+
+    # Rows already sitting in --out from an earlier (partial) run. Tracked separately from
+    # `written` (rows added THIS run) so the meta file reports the true total on disk instead
+    # of just this session's slice. Fixes: item_count in *_meta.json under-counting after
+    # --resume (e.g. reporting 7 when the output file actually has 24 lines).
+    prior_count = 0
     if args.resume:
         done = _load_done_ids(out_path)
+        prior_count = len(done)
         items = [i for i in items if i.id not in done]
-        print(f"resume: {len(done)} already done, {len(items)} remaining")
+        print(f"resume: {prior_count} already done, {len(items)} remaining")
 
     if args.limit:
         items = items[: args.limit]
@@ -284,7 +296,8 @@ def main() -> None:
         "prompt_version":         prompt_version,
         "git_commit":             _git_commit(),
         "split":                  args.split,
-        "item_count":             written,
+        "item_count":             prior_count + written,
+        "written_this_run":       written,
         "error_count":            error_count,
         "input_tokens":           total_in,
         "output_tokens":          total_out,
@@ -296,7 +309,7 @@ def main() -> None:
     meta_path = out_path.with_name(out_path.stem + "_meta.json")
     meta_path.write_text(json.dumps(meta, indent=2), encoding="utf-8")
 
-    print(f"\n→ {out_path}  (rows={written}, errors={error_count}, "
+    print(f"\n→ {out_path}  (rows={prior_count + written}, errors={error_count}, "
           f"tokens={total_in + total_out}, cost=${total_cost:.4f})")
     print(f"→ {meta_path}")
 
